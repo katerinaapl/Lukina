@@ -1,0 +1,512 @@
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Jost:wght@300;400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--teal:#2B6B6B;--teal-l:#3D8C8C;--teal-p:#EEF4F4;--cream:#F5F2EC;--ink:#1C2424;--muted:#8A9A9A;--ln:rgba(43,107,107,0.15);}
+body{background:var(--cream);font-family:'Jost',sans-serif;color:var(--ink);}
+.page{display:none;}.page.active{display:block;margin:0 15vw;}
+
+.hdr{padding:1.2rem 2rem 1rem;border-bottom:1px solid var(--ln);}
+.logo-center{display:flex;justify-content:center;}
+
+.product{display:grid;grid-template-columns:1fr 1fr;min-height:680px;}
+.visual{background:#fff;border-right:1px solid var(--ln);display:flex;flex-direction:column;}
+.crown-main{overflow:hidden;aspect-ratio:1/1;width:100%;}
+.main-media{width:100%;height:100%;object-fit:cover;object-position:center;display:block;}
+.crown-thumbs{display:flex;border-top:1px solid var(--ln);}
+.thumb{flex:1;border-right:1px solid var(--ln);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;opacity:0.4;transition:opacity 0.2s;overflow:hidden;aspect-ratio:1/1;}
+.thumb:last-child{border:none;}
+.thumb.active,.thumb:hover{opacity:1;}
+
+.info{padding:2.5rem 2rem;display:flex;flex-direction:column;justify-content:space-between;gap:1.5rem;}
+.prod-eyebrow{font-size:12px;letter-spacing:0.22em;text-transform:uppercase;color:var(--teal);margin-bottom:1rem;display:flex;align-items:center;gap:10px;}
+.prod-eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--teal);}
+.prod-name{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2.2rem,4.5vw,3.6rem);line-height:0.9;letter-spacing:-0.01em;}
+.prod-name em{display:block;font-style:italic;color:var(--teal);}
+.prod-desc{font-size:14px;color:var(--muted);line-height:1.9;margin-top:1.2rem;max-width:300px;}
+.options-block{display:flex;flex-direction:column;gap:1.3rem;}
+.opt-label{font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.color-row{display:flex;gap:10px;}
+.csw{width:26px;height:26px;border-radius:50%;cursor:pointer;outline:2.5px solid transparent;outline-offset:3px;transition:all 0.18s;}
+.csw:hover{outline-color:rgba(43,107,107,0.4);}
+.csw.active{outline-color:var(--teal);}
+.size-row{display:flex;gap:6px;}
+.sbtn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border:1px solid var(--ln);background:none;font-family:'Cormorant Garamond',serif;font-size:1rem;font-style:italic;color:var(--ink);cursor:pointer;transition:all 0.15s;}
+.sbtn:hover{border-color:var(--teal);color:var(--teal);}
+.sbtn.active{border-color:var(--teal);background:var(--teal);color:#fff;}
+.price-quiet{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;}
+.price-quiet strong{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:400;color:var(--ink);}
+.buy-btn{width:100%;padding:15px;background:var(--teal);color:#fff;border:none;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;cursor:pointer;transition:background 0.15s;}
+.buy-btn:hover{background:var(--teal-l);}
+.prod-note{font-size:12px;color:var(--muted);line-height:1.9;border-top:1px solid var(--ln);padding-top:1rem;}
+
+.section-divider{display:flex;align-items:center;gap:0;margin:32px 0;padding:0 2rem;}
+.section-divider::before,.section-divider::after{content:'';flex:1;height:1px;background:var(--ln);}
+.section-divider-mark{width:6px;height:6px;border:1px solid var(--teal);transform:rotate(45deg);margin:0 1.2rem;flex-shrink:0;opacity:0.5;}
+.about{display:grid;grid-template-columns:1fr 1fr;}
+.about-heading-section{display:flex;justify-content:center;padding:0.2rem 0;margin-bottom:32px;}
+.about-visual{background:var(--teal-p);border-left:1px solid var(--ln);display:flex;align-items:center;justify-content:center;aspect-ratio:1/1;position:relative;overflow:hidden;}
+.about-photo{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;position:absolute;top:0;left:0;}
+.about-visual-caption{position:absolute;bottom:1.2rem;left:0;right:0;text-align:center;font-size:8px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);}
+.about-text{padding:3rem 2.5rem;display:flex;flex-direction:column;justify-content:center;gap:1.5rem;}
+.about-eyebrow{font-size:12px;letter-spacing:0.22em;text-transform:uppercase;color:var(--teal);display:flex;align-items:center;justify-content:center;gap:10px;}
+.about-eyebrow::before{content:'';display:block;width:20px;height:1px;background:var(--teal);}
+.about-quote{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:clamp(1.5rem,2.8vw,2.1rem);line-height:1.3;color:var(--ink);}
+.about-quote strong{font-style:normal;font-weight:600;color:var(--teal);}
+.about-body{font-size:14px;color:var(--muted);line-height:2;letter-spacing:0.02em;}
+
+/* FOOTER */
+.footer{background:#2B4A4A;padding:1.8rem 2.5rem;}
+.footer-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.4rem;}
+.footer-socials{display:flex;gap:1.5rem;align-items:center;}
+.soc-link{display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.55);text-decoration:none;transition:color 0.15s;}
+.soc-link:hover{color:rgba(255,255,255,0.95);}
+.soc-icon{width:15px;height:15px;flex-shrink:0;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.12);padding-top:1.2rem;display:flex;justify-content:space-between;align-items:center;}
+.footer-copy{font-size:12px;color:rgba(255,255,255,0.35);letter-spacing:0.1em;text-transform:uppercase;}
+
+/* LANGUAGE SWITCHER — minimal */
+.lang-switcher{display:flex;align-items:center;gap:0;}
+.lang-btn{background:none;border:none;font-family:'Jost',sans-serif;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.38);cursor:pointer;padding:0 10px;line-height:1;transition:color 0.15s;border-right:1px solid rgba(255,255,255,0.15);}
+.lang-btn:last-child{border:none;}
+.lang-btn:hover{color:rgba(255,255,255,0.7);}
+.lang-btn.active{color:#fff;}
+
+/* ORDER */
+.order-wrap{max-width:640px;margin:0 auto;padding:2.5rem 2rem 3rem;}
+.back-link{font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--teal);cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-bottom:2.5rem;}
+.back-link:hover{text-decoration:underline;}
+.order-title{font-family:'Cormorant Garamond',serif;font-weight:300;font-size:clamp(2rem,5vw,3rem);line-height:0.92;margin-bottom:0.6rem;}
+.order-title em{font-style:italic;color:var(--teal);}
+.order-sub{font-size:14px;color:var(--muted);line-height:1.8;margin-bottom:2rem;}
+.region-row{display:flex;gap:6px;margin-bottom:1.8rem;}
+.rcard{flex:1;border:1px solid var(--ln);padding:1rem;cursor:pointer;transition:all 0.15s;position:relative;}
+.rcard:hover{border-color:var(--teal);}
+.rcard.active{border-color:var(--teal);background:var(--teal-p);}
+.rcard.active::after{content:'✓';position:absolute;top:10px;right:12px;font-size:10px;color:var(--teal);}
+.rc-label{font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.rc-price{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--ink);}
+.rc-price sup{font-size:14px;font-family:'Jost',sans-serif;color:var(--muted);}
+.rc-geo{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.6;}
+.summary{border:1px solid var(--ln);padding:1rem 1.2rem;margin-bottom:1.8rem;display:flex;justify-content:space-between;align-items:center;background:#fff;}
+.sum-tag{font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);}
+.sum-val{display:flex;align-items:center;gap:8px;font-size:14px;margin-top:4px;}
+.sum-dot{width:13px;height:13px;border-radius:50%;}
+.sum-total{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--teal);}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ff{grid-column:span 2;}
+.fld{display:flex;flex-direction:column;gap:5px;}
+.fld label{font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);}
+.fld input,.fld textarea{width:100%;padding:10px 13px;border:1px solid var(--ln);background:#fff;font-family:'Jost',sans-serif;font-size:12px;color:var(--ink);outline:none;transition:border-color 0.15s;}
+.fld input:focus,.fld textarea:focus{border-color:var(--teal);}
+.fld textarea{min-height:72px;resize:vertical;}
+.fnote{font-size:12px;color:var(--muted);line-height:1.9;padding:1rem;border:1px solid var(--ln);background:var(--teal-p);margin:1.2rem 0;}
+.sub-btn{width:100%;padding:15px;background:var(--teal);color:#fff;border:none;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;cursor:pointer;transition:background 0.15s;}
+.sub-btn:hover{background:var(--teal-l);}
+.success{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;padding:3rem 2rem;}
+.s-ring{width:60px;height:60px;border:1px solid var(--teal);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--teal);margin:0 auto 2rem;}
+.s-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:2.5rem;font-weight:300;color:var(--teal);margin-bottom:.7rem;}
+.s-sub{font-size:14px;color:var(--muted);line-height:2;max-width:340px;}
+
+@media(max-width:768px){
+  .page.active{margin:0;}
+
+  /* product section — stack vertically */
+  .product{grid-template-columns:1fr;min-height:auto;}
+  .visual{border-right:none;border-bottom:1px solid var(--ln);}
+  .info{padding:1.5rem 1rem;}
+  .prod-name{font-size:clamp(2rem,8vw,3rem);}
+
+  /* about section — stack vertically, photo below text */
+  .about{grid-template-columns:1fr;}
+  .about-visual{border-left:none;border-top:1px solid var(--ln);}
+  .about-text{padding:2rem 1rem;}
+  .about-heading-section{margin-bottom:0;}
+  .about-quote{font-size:clamp(1.4rem,5vw,2rem);}
+
+  /* dividers */
+  .section-divider{margin:20px 0;padding:0 1rem;}
+
+  /* header */
+  .hdr{padding:1rem 1rem 0.8rem;}
+
+  /* footer */
+  .footer{padding:1.4rem 1rem;}
+  .footer-top{flex-direction:column;align-items:center;gap:1rem;margin-bottom:1rem;}
+  .footer-socials{flex-wrap:wrap;justify-content:center;gap:1rem;}
+  .footer-bottom{flex-direction:column;align-items:center;gap:0.6rem;}
+
+  /* order form */
+  .order-wrap{padding:1.5rem 1rem 2rem;}
+  .region-row{flex-direction:column;}
+  .fg{grid-template-columns:1fr;}
+  .ff{grid-column:span 1;}
+}
+</style>
+
+<div class="hdr">
+  <div class="logo-center">
+    <svg width="240" height="36" viewBox="0 0 260 40" fill="none">
+      <line x1="0" y1="20" x2="30" y2="20" stroke="#2B6B6B" stroke-width="0.8"/>
+      <rect x="30" y="5" width="200" height="30" stroke="#2B6B6B" stroke-width="1" fill="none"/>
+      <line x1="230" y1="20" x2="260" y2="20" stroke="#2B6B6B" stroke-width="0.8"/>
+      <text x="130" y="24" text-anchor="middle" font-family="Jost,sans-serif" font-size="11" font-weight="500" fill="#2B6B6B" letter-spacing="5">LUKINA REDESIGN</text>
+    </svg>
+  </div>
+</div>
+
+<div class="page active" id="pageProduct">
+  <div class="product">
+    <div class="visual">
+      <div class="crown-main" id="mainMediaWrap">
+        <img id="mainImg" class="main-media" src="" alt="">
+        <video id="mainVideo" class="main-media" src="" autoplay loop muted playsinline style="display:none"></video>
+      </div>
+      <div class="crown-thumbs" id="thumbRow"></div>
+    </div>
+    <div class="info">
+      <div>
+        <div class="prod-name" id="t-name">Карона<br><em>«Ціхая ўлада»</em></div>
+        <p class="prod-desc" id="t-desc">Тканіная карона, пашытая ўручную. Мяккая, лёгкая — яе амаль не адчуваеш. Толькі ведаеш, што яна ёсць.</p>
+      </div>
+      <div class="options-block">
+        <div>
+          <div class="opt-label" id="t-color-lbl">Колер</div>
+          <div class="color-row" id="colorRow">
+            <div class="csw active" style="background:#38322d;" data-key="black" data-hex="#38322d" onclick="pickColor(this)"></div>
+            <div class="csw" style="background:#b12d26;" data-key="red" data-hex="#b12d26" onclick="pickColor(this)"></div>
+            <div class="csw" style="background:#0965d3;" data-key="blue" data-hex="#0965d3" onclick="pickColor(this)"></div>
+          </div>
+        </div>
+        <div>
+          <div class="opt-label" id="t-size-lbl">Памер</div>
+          <div class="size-row">
+            <button class="sbtn" onclick="pickSize('S',52,54,0.78,this)">S</button>
+            <button class="sbtn active" onclick="pickSize('M',56,58,1.0,this)">M</button>
+            <button class="sbtn" onclick="pickSize('L',60,62,1.22,this)">L</button>
+          </div>
+        </div>
+        <div>
+          <div class="price-quiet"><span id="t-price-lbl">Кошт</span>&nbsp;<strong>30 €</strong></div>
+          <button class="buy-btn" style="margin-top:12px;" id="t-buy-btn" onclick="goOrder()">Купіць</button>
+          <p class="prod-note" id="t-note" style="margin-top:12px;">Ручная праца · Тэрмін 2–3 тыдні · Дастаўка па ўсім свеце</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"><div class="section-divider-mark"></div></div>
+  <div class="about-heading-section">
+    <div class="about-eyebrow" id="t-about-eyebrow">Пра дызайнера</div>
+  </div>
+
+  <div class="about">
+    <div class="about-text">
+      <div class="about-quote" id="t-quote">Карона — гэта не<br>ўпрыгожванне.<br>Гэта <strong>маніфест</strong><br>той, хто яе носіць.</div>
+      <p class="about-body" id="t-about-body">Кожная карона ствараецца ўручную ў майстэрні ў Мінску. Аснова — мембранная тканіна: яна трымае форму ў любое надвор'е, не мнецца і не губляе выгляд. Унутры — мяккі ізасофт, які робіць карону цёплай і лёгкай адначасова.<br><br>Я шыю кожны выраб сама, ад выкройкі да апошняга шва. Ніякіх фабрык, ніякіх тыражоў — толькі штучная праца з увагай да кожнай дэталі.<br><br>Карона — гэта рэч з характарам. Яна не просіць дазволу. Яна проста ёсць.</p>
+    </div>
+    <div class="about-visual">
+      <img src="Lukina/dis.jpg" alt="Дызайнер" class="about-photo">
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-top">
+      <svg width="160" height="28" viewBox="0 0 260 40" fill="none">
+        <line x1="0" y1="20" x2="30" y2="20" stroke="#3D8C8C" stroke-width="0.7"/>
+        <rect x="30" y="6" width="200" height="28" stroke="#3D8C8C" stroke-width="0.8" fill="none"/>
+        <line x1="230" y1="20" x2="260" y2="20" stroke="#3D8C8C" stroke-width="0.7"/>
+        <text x="130" y="23" text-anchor="middle" font-family="Jost,sans-serif" font-size="10" font-weight="500" fill="#3D8C8C" letter-spacing="4">LUKINA REDESIGN</text>
+      </svg>
+      <div class="footer-socials">
+        <a class="soc-link" href="https://www.instagram.com/lukina.redesign?utm_source=qr&igsh=MWxwaGttMno0NmhzdQ==" target="_blank">
+          <svg class="soc-icon" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.3"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+          Instagram
+        </a>
+        <a class="soc-link" href="https://t.me/Lukinah" target="_blank">
+          <svg class="soc-icon" viewBox="0 0 24 24" fill="none"><path d="M21.8 2.6L1.3 10.5c-1.3.5-1.3 1.3-.2 1.6l5.2 1.6 2 6.3c.3.8.6 1.1 1 1.1.5 0 .7-.2 1-.5l2.5-2.4 5.2 3.8c1 .5 1.7.2 1.9-.9l3.4-16c.3-1.4-.5-2-1.5-1.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+          Telegram
+        </a>
+        <a class="soc-link" href="https://m.me/lukkinaa?hash=AbYuUBhvWph6Qoff&source=qr_link_share" target="_blank">
+          <svg class="soc-icon" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.1 2 11.2c0 2.8 1.3 5.3 3.4 7v3.4l3.2-1.8c.8.2 1.6.3 2.4.3 5.5 0 10-4.1 10-9.2C22 6.1 17.5 2 12 2z" stroke="currentColor" stroke-width="1.2"/><path d="M7 13.5l3-3.2 2.3 2.3 3.2-2.3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Messenger
+        </a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy" id="t-copy">© 2025 Lukina Redesign</div>
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('bel')">Бел</button>
+        <button class="lang-btn" onclick="setLang('rus')">Рус</button>
+        <button class="lang-btn" onclick="setLang('eng')">Eng</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page" id="pageOrder">
+  <div class="order-wrap">
+    <div class="back-link" id="t-back" onclick="goProduct()">← Назад</div>
+    <div class="order-title" id="t-order-title">Аформіць<br><em>заказ</em></div>
+    <p class="order-sub" id="t-order-sub">Выберыце рэгіён дастаўкі — цана скарэкціруецца аўтаматычна.</p>
+    <div class="region-row">
+      <div class="rcard active" id="rc-cis" onclick="pickRegion('cis',10)">
+        <div class="rc-label" id="t-reg1">СНД</div>
+        <div class="rc-price">10 <sup>€</sup></div>
+        <div class="rc-geo" id="t-reg1-geo">Беларусь, Расія,<br>Казахстан і інш.</div>
+      </div>
+      <div class="rcard" id="rc-eu" onclick="pickRegion('eu',15)">
+        <div class="rc-label" id="t-reg2">Еўропа · ЗША</div>
+        <div class="rc-price">15 <sup>€</sup></div>
+        <div class="rc-geo" id="t-reg2-geo">ЕС, ЗША, Канада,<br>Аўстралія</div>
+      </div>
+    </div>
+    <div class="summary">
+      <div>
+        <div class="sum-tag" id="t-your-choice">Ваш выбар</div>
+        <div class="sum-val"><div class="sum-dot" id="sumDot" style="background:#38322d;"></div><span id="sumText">Чорная · M · 56–58 см</span></div>
+      </div>
+      <div style="text-align:right;">
+        <div class="sum-tag" id="t-total-lbl">Да аплаты</div>
+        <div class="sum-total" id="sumPrice">10 €</div>
+      </div>
+    </div>
+    <div class="fg">
+      <div class="fld"><label id="t-f-name">Імя</label><input id="fName" placeholder="Ваша імя"></div>
+      <div class="fld"><label id="t-f-last">Прозвішча</label><input id="fLast" placeholder="Прозвішча"></div>
+      <div class="fld ff"><label>Email</label><input id="fEmail" type="email" placeholder="your@email.com"></div>
+      <div class="fld ff"><label id="t-f-phone">Тэлефон / Telegram</label><input id="fPhone" placeholder="+375 або @username"></div>
+      <div class="fld ff"><label id="t-f-city">Краіна і горад</label><input id="fCity" placeholder="Беларусь, Мінск"></div>
+      <div class="fld ff"><label id="t-f-addr">Адрас дастаўкі</label><input id="fAddr" placeholder="Вуліца, дом, кватэра, індэкс"></div>
+      <div class="fld ff"><label id="t-f-note">Каментарый</label><textarea id="fNote" placeholder="Пажаданні да замовы..."></textarea></div>
+    </div>
+    <div class="fnote" id="t-fnote">Пасля адпраўкі заяўкі мы звяжамся з вамі на працягу 24 гадзін для пацверджання і аплаты — PayPal, Wise або па дамоўленасці.</div>
+    <button class="sub-btn" id="t-submit" onclick="submitOrder()">Адправіць заяўку →</button>
+  </div>
+</div>
+
+<div class="page" id="pageSuccess">
+  <div class="success">
+    <div class="s-ring">✓</div>
+    <div class="s-title" id="t-thanks">Дзякуй</div>
+    <p class="s-sub" id="sMsg">Мы звяжамся з вамі на працягу 24 гадзін.</p>
+    <button class="buy-btn" style="max-width:220px;margin-top:2rem;" id="t-back-shop" onclick="goProduct()">← У краму</button>
+  </div>
+</div>
+
+<script>
+const CROWN_PRICE=30;
+let S={color:'black',hex:'#38322d',name:'Чорная',size:'M',cmFrom:56,cmTo:58,scale:1.0,region:'cis',price:10};
+let currentLang='bel';
+let S_mediaIdx=0;
+
+const GALLERY={
+  black:[
+    {type:'video',src:'Lukina/Black 0.mp4'},
+    {type:'img',src:'Lukina/Black 1.jpg'},
+    {type:'img',src:'Lukina/Black 2.jpg'}
+  ],
+  red:[
+    {type:'img',src:'Lukina/Red 1.jpg'},
+    {type:'img',src:'Lukina/Red 2.jpg'}
+  ],
+  blue:[
+    {type:'video',src:'Lukina/Blue 0.mp4'},
+    {type:'img',src:'Lukina/Blue 1.jpg'},
+    {type:'img',src:'Lukina/Blue 2.jpg'}
+  ]
+};
+
+const T={
+  bel:{eyebrow:'Handmade · SS 2025',name:'Карона<br><em>«Ціхая ўлада»</em>',desc:'Тканіная карона, пашытая ўручную. Мяккая, лёгкая — яе амаль не адчуваеш. Толькі ведаеш, што яна ёсць.',colorLbl:'Колер',sizeLbl:'Памер',priceLbl:'Кошт',buyBtn:'Купіць',note:'Ручная праца · Тэрмін 2–3 тыдні · Дастаўка па ўсім свеце',aboutCap:'Дызайнер · майстэрня · Мінск',aboutEyebrow:'Пра дызайнера',quote:'Карона — гэта не<br>ўпрыгожванне.<br>Гэта <strong>маніфест</strong><br>той, хто яе носіць.',body:'Кожная карона ствараецца ўручную ў майстэрні ў Мінску. Аснова — мембранная тканіна: яна трымае форму ў любое надвор\'е, не мнецца і не губляе выгляд. Унутры — мяккі ізасофт, які робіць карону цёплай і лёгкай адначасова.<br><br>Я шыю кожны выраб сама, ад выкройкі да апошняга шва. Ніякіх фабрык, ніякіх тыражоў — толькі штучная праца з увагай да кожнай дэталі.<br><br>Карона — гэта рэч з характарам. Яна не просіць дазволу. Яна проста ёсць.',back:'← Назад',orderTitle:'Аформіць<br><em>заказ</em>',orderSub:'Выберыце рэгіён дастаўкі — цана скарэкціруецца аўтаматычна.',reg1:'СНД',reg1geo:'Беларусь, Расія,<br>Казахстан і інш.',reg2:'Еўропа · ЗША',reg2geo:'ЕС, ЗША, Канада,<br>Аўстралія',yourChoice:'Ваш выбар',totalLbl:'Да аплаты',fName:'Імя',fLast:'Прозвішча',fPhone:'Тэлефон / Telegram',fCity:'Краіна і горад',fAddr:'Адрас дастаўкі',fNote:'Каментарый',fnote:'Пасля адпраўкі заяўкі мы звяжамся з вамі на працягу 24 гадзін для пацверджання і аплаты — PayPal, Wise або па дамоўленасці.',submit:'Адправіць заяўку →',thanks:'Дзякуй',backShop:'← У краму',copy:'© 2025 Lukina Redesign',colorNames:{black:'Чорная',red:'Чырвоная',blue:'Сіняя'},cm:'см'},
+  rus:{eyebrow:'Handmade · SS 2025',name:'Корона<br><em>«Тихая власть»</em>',desc:'Тканевая корона, сшитая вручную. Мягкая, лёгкая — её почти не чувствуешь. Только знаешь, что она есть.',colorLbl:'Цвет',sizeLbl:'Размер',priceLbl:'Стоимость',buyBtn:'Купить',note:'Ручная работа · Срок 2–3 недели · Доставка по всему миру',aboutCap:'Дизайнер · мастерская · Минск',aboutEyebrow:'О дизайнерке',quote:'Корона — это не<br>украшение.<br>Это <strong>манифест</strong><br>той, кто её носит.',body:'Каждая корона создаётся вручную в мастерской в Минске. В основе — мембранная ткань: она держит форму в любую погоду, не мнётся и не теряет вид. Внутри — мягкий изософт, который делает корону тёплой и лёгкой одновременно.<br><br>Я шью каждое изделие сама, от выкройки до последнего стежка. Никаких фабрик, никаких тиражей — только штучная работа с вниманием к каждой детали.<br><br>Корона — это вещь с характером. Она не просит разрешения. Она просто есть.',back:'← Назад',orderTitle:'Оформить<br><em>заказ</em>',orderSub:'Выберите регион доставки — цена скорректируется автоматически.',reg1:'СНГ',reg1geo:'Беларусь, Россия,<br>Казахстан и др.',reg2:'Европа · США',reg2geo:'ЕС, США, Канада,<br>Австралия',yourChoice:'Ваш выбор',totalLbl:'К оплате',fName:'Имя',fLast:'Фамилия',fPhone:'Телефон / Telegram',fCity:'Страна и город',fAddr:'Адрес доставки',fNote:'Комментарий',fnote:'После отправки заявки мы свяжемся с вами в течение 24 часов для подтверждения и оплаты — PayPal, Wise или по договорённости.',submit:'Отправить заявку →',thanks:'Спасибо',backShop:'← В магазин',copy:'© 2025 Lukina Redesign',colorNames:{black:'Чёрная',red:'Красная',blue:'Синяя'},cm:'см'},
+  eng:{eyebrow:'Handmade · SS 2025',name:'Crown<br><em>«Quiet Power»</em>',desc:'A handmade fabric crown. Soft and light — you barely feel it. You just know it\'s there.',colorLbl:'Colour',sizeLbl:'Size',priceLbl:'Price',buyBtn:'Buy now',note:'Handmade · Lead time 2–3 weeks · Worldwide shipping',aboutCap:'Designer · studio · Minsk',aboutEyebrow:'About the designer',quote:'A crown is not<br>an accessory.<br>It is a <strong>manifesto</strong><br>of the one who wears it.',body:'Every crown is made by hand in a studio in Minsk. The outer shell is membrane fabric — it holds its shape in any weather, never creases, never loses its look. Inside is soft isosoft padding, making the crown warm and light at the same time.<br><br>I sew every piece myself, from pattern to final stitch. No factories, no mass production — only handcrafted work with attention to every detail.<br><br>A crown is an object with character. It doesn\'t ask permission. It simply is.',back:'← Back',orderTitle:'Place<br><em>an order</em>',orderSub:'Select your delivery region — the price will update automatically.',reg1:'CIS',reg1geo:'Belarus, Russia,<br>Kazakhstan etc.',reg2:'Europe · USA',reg2geo:'EU, USA, Canada,<br>Australia',yourChoice:'Your selection',totalLbl:'Total',fName:'First name',fLast:'Last name',fPhone:'Phone / Telegram',fCity:'Country & city',fAddr:'Delivery address',fNote:'Comment',fnote:'After submitting your request we will contact you within 24 hours to confirm the order and arrange payment — PayPal, Wise or as agreed.',submit:'Send request →',thanks:'Thank you',backShop:'← Back to shop',copy:'© 2025 Lukina Redesign',colorNames:{black:'Black',red:'Red',blue:'Blue'},cm:'cm'}
+};
+
+function setLang(lang){
+  currentLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
+  const t=T[lang];
+  document.getElementById('t-eyebrow').textContent=t.eyebrow;
+  document.getElementById('t-name').innerHTML=t.name;
+  document.getElementById('t-desc').textContent=t.desc;
+  document.getElementById('t-color-lbl').textContent=t.colorLbl;
+  document.getElementById('t-size-lbl').textContent=t.sizeLbl;
+  document.getElementById('t-price-lbl').textContent=t.priceLbl;
+  document.getElementById('t-buy-btn').textContent=t.buyBtn;
+  document.getElementById('t-note').textContent=t.note;
+  document.getElementById('t-about-cap').textContent=t.aboutCap;
+  document.getElementById('t-about-eyebrow').textContent=t.aboutEyebrow;
+  document.getElementById('t-quote').innerHTML=t.quote;
+  document.getElementById('t-about-body').innerHTML=t.body;
+  document.getElementById('t-copy').textContent=t.copy;
+  document.getElementById('t-back').textContent=t.back;
+  document.getElementById('t-order-title').innerHTML=t.orderTitle;
+  document.getElementById('t-order-sub').textContent=t.orderSub;
+  document.getElementById('t-reg1').textContent=t.reg1;
+  document.getElementById('t-reg1-geo').innerHTML=t.reg1geo;
+  document.getElementById('t-reg2').textContent=t.reg2;
+  document.getElementById('t-reg2-geo').innerHTML=t.reg2geo;
+  document.getElementById('t-your-choice').textContent=t.yourChoice;
+  document.getElementById('t-total-lbl').textContent=t.totalLbl;
+  document.getElementById('t-f-name').textContent=t.fName;
+  document.getElementById('t-f-last').textContent=t.fLast;
+  document.getElementById('t-f-phone').textContent=t.fPhone;
+  document.getElementById('t-f-city').textContent=t.fCity;
+  document.getElementById('t-f-addr').textContent=t.fAddr;
+  document.getElementById('t-f-note').textContent=t.fNote;
+  document.getElementById('t-fnote').textContent=t.fnote;
+  document.getElementById('t-submit').textContent=t.submit;
+  document.getElementById('t-thanks').textContent=t.thanks;
+  document.getElementById('t-back-shop').textContent=t.backShop;
+  S.name=t.colorNames[S.color];
+  updateSummary();
+}
+
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+function goProduct(){showPage('pageProduct');}
+function goOrder(){updateSummary();showPage('pageOrder');}
+function showMedia(colorKey,idx){
+  const items=GALLERY[colorKey];
+  S_mediaIdx=idx;
+  const item=items[idx];
+  const img=document.getElementById('mainImg');
+  const vid=document.getElementById('mainVideo');
+  if(item.type==='video'){
+    img.style.display='none';
+    vid.style.display='block';
+    vid.src=item.src;
+    vid.load();vid.play();
+  }else{
+    vid.style.display='none';vid.pause();
+    img.style.display='block';
+    img.src=item.src;
+  }
+}
+function pickColor(el){
+  document.querySelectorAll('.csw').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  S.color=el.dataset.key;S.hex=el.dataset.hex;
+  S.name=T[currentLang].colorNames[S.color];
+  S_mediaIdx=0;
+  showMedia(S.color,0);
+  buildThumbs();
+}
+function pickSize(key,from,to,scale,el){
+  document.querySelectorAll('.sbtn').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  S.size=key;S.cmFrom=from;S.cmTo=to;S.scale=scale;
+}
+function pickRegion(key,price){
+  S.region=key;S.price=price;
+  document.getElementById('rc-cis').classList.toggle('active',key==='cis');
+  document.getElementById('rc-eu').classList.toggle('active',key==='eu');
+  updateSummary();
+}
+function updateSummary(){
+  const t=T[currentLang];
+  document.getElementById('sumDot').style.background=S.hex;
+  document.getElementById('sumText').textContent=`${S.name} · ${S.size} · ${S.cmFrom}–${S.cmTo} ${t.cm}`;
+  document.getElementById('sumPrice').textContent=`${CROWN_PRICE+S.price} €`;
+}
+function submitOrder(){
+  const name=document.getElementById('fName').value.trim();
+  const email=document.getElementById('fEmail').value.trim();
+  if(!name||!email){alert('Please fill in your name and email');return;}
+  document.getElementById('sMsg').textContent=`${S.name} · ${S.size} · ${email}`;
+  showPage('pageSuccess');
+}
+
+const PAL={
+  black:{fill:'#38322d',seam:'rgba(255,255,255,0.06)',shine:'rgba(255,255,255,0.05)',darkL:'rgba(0,0,0,0.45)',darkR:'rgba(0,0,0,0.45)',outline:'rgba(255,255,255,0.1)'},
+  red:{fill:'#b12d26',seam:'rgba(255,180,180,0.1)',shine:'rgba(255,160,160,0.13)',darkL:'rgba(60,0,0,0.3)',darkR:'rgba(60,0,0,0.3)',outline:'rgba(140,20,20,0.35)'},
+  blue:{fill:'#0965d3',seam:'rgba(180,210,255,0.12)',shine:'rgba(200,225,255,0.16)',darkL:'rgba(0,20,80,0.3)',darkR:'rgba(0,20,80,0.3)',outline:'rgba(5,60,160,0.35)'}
+};
+
+function drawCrownShape(ctx,cx,cy,s){
+  const baseY=cy+68*s,bL=cx-92*s,bR=cx+92*s;
+  ctx.beginPath();
+  ctx.moveTo(bL,baseY);ctx.lineTo(bL+8*s,cy+6*s);
+  ctx.lineTo(cx-62*s,cy-20*s);ctx.lineTo(cx-28*s,cy+12*s);
+  ctx.lineTo(cx,cy-84*s);
+  ctx.lineTo(cx+28*s,cy+12*s);ctx.lineTo(cx+62*s,cy-20*s);
+  ctx.lineTo(bR-8*s,cy+6*s);ctx.lineTo(bR,baseY);
+  ctx.closePath();
+  return{baseY,bL,bR};
+}
+
+function drawCrown(canvas,scale,colorKey,cmFrom,cmTo,showBracket){
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width,H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#FAFAFA';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(43,107,107,0.05)';ctx.lineWidth=0.5;
+  for(let i=0;i<=9;i++){ctx.beginPath();ctx.moveTo(0,i*H/9);ctx.lineTo(W,i*H/9);ctx.stroke();}
+  for(let i=0;i<=7;i++){ctx.beginPath();ctx.moveTo(i*W/7,0);ctx.lineTo(i*W/7,H);ctx.stroke();}
+  const C=PAL[colorKey]||PAL.black;
+  const s=scale,cx=W/2,cy=showBracket?H*0.40:H*0.44;
+  function p(){return drawCrownShape(ctx,cx,cy,s);}
+  ctx.save();ctx.shadowColor='rgba(0,0,0,0.16)';ctx.shadowBlur=20;ctx.shadowOffsetY=10;
+  ctx.fillStyle=C.fill;p();ctx.fill();ctx.restore();
+  ctx.fillStyle=C.fill;const{baseY,bL,bR}=p();ctx.fill();
+  const gV=ctx.createLinearGradient(bL,cy,bR,cy);
+  gV.addColorStop(0,C.darkL);gV.addColorStop(0.16,'rgba(0,0,0,0)');gV.addColorStop(0.84,'rgba(0,0,0,0)');gV.addColorStop(1,C.darkR);
+  ctx.fillStyle=gV;p();ctx.fill();
+  const gS=ctx.createLinearGradient(cx,cy-84*s,cx,baseY);
+  gS.addColorStop(0,C.shine);gS.addColorStop(0.4,'rgba(255,255,255,0.01)');gS.addColorStop(1,'rgba(0,0,0,0.08)');
+  ctx.fillStyle=gS;p();ctx.fill();
+  ctx.strokeStyle=C.seam;ctx.lineWidth=0.8;
+  [[cx,cy-84*s,cx,baseY],[cx-62*s,cy-20*s,cx-54*s,baseY],[cx+62*s,cy-20*s,cx+54*s,baseY]].forEach(l=>{ctx.beginPath();ctx.moveTo(l[0],l[1]);ctx.lineTo(l[2],l[3]);ctx.stroke();});
+  ctx.strokeStyle=C.outline;ctx.lineWidth=1.2;p();ctx.stroke();
+  if(showBracket&&cmFrom){
+    const bY=baseY+20,tH=6,tc='rgba(43,107,107,0.5)',unit=T[currentLang].cm;
+    ctx.strokeStyle=tc;ctx.lineWidth=0.8;
+    ctx.beginPath();ctx.moveTo(bL,bY-tH);ctx.lineTo(bL,bY+tH);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(bR,bY-tH);ctx.lineTo(bR,bY+tH);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(bL,bY);ctx.lineTo(cx-32,bY);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+32,bY);ctx.lineTo(bR,bY);ctx.stroke();
+    ctx.fillStyle='rgba(43,107,107,0.6)';ctx.font='400 9px Jost,sans-serif';ctx.textAlign='center';
+    ctx.fillText(`${cmFrom}–${cmTo} ${unit}`,cx,bY+4);
+  }
+  if(showBracket){
+    const ly=H-26;
+    ctx.strokeStyle='rgba(43,107,107,0.28)';ctx.lineWidth=0.6;
+    ctx.strokeRect(cx-52,ly,104,17);
+    ctx.beginPath();ctx.moveTo(cx-72,ly+8.5);ctx.lineTo(cx-52,ly+8.5);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+52,ly+8.5);ctx.lineTo(cx+72,ly+8.5);ctx.stroke();
+    ctx.fillStyle='rgba(43,107,107,0.4)';ctx.font='500 7px Jost,sans-serif';ctx.textAlign='center';
+    ctx.fillText('LUKINA REDESIGN',cx,ly+12);
+  }
+}
+
+
+function buildThumbs(){
+  const row=document.getElementById('thumbRow');row.innerHTML='';
+  const items=GALLERY[S.color];
+  items.forEach((item,idx)=>{
+    const div=document.createElement('div');
+    div.className='thumb'+(idx===S_mediaIdx?' active':'');
+    if(item.type==='video'){
+      const v=document.createElement('video');
+      v.src=item.src;v.muted=true;v.preload='metadata';
+      v.style.cssText='width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
+      div.appendChild(v);
+    }else{
+      const im=document.createElement('img');
+      im.src=item.src;
+      im.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';
+      div.appendChild(im);
+    }
+    div.onclick=()=>{
+      document.querySelectorAll('.thumb').forEach(t=>t.classList.remove('active'));
+      div.classList.add('active');
+      showMedia(S.color,idx);
+    };
+    row.appendChild(div);
+  });
+}
+
+showMedia('black',0);buildThumbs();
+</script>
