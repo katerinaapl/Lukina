@@ -198,7 +198,6 @@ function setLang(lang){
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
   document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
   const t=T[lang];
-  document.getElementById('t-eyebrow').textContent=t.eyebrow;
   document.getElementById('t-name').innerHTML=t.name;
   document.getElementById('t-desc').textContent=t.desc;
   document.getElementById('t-color-lbl').textContent=t.colorLbl;
@@ -206,7 +205,6 @@ function setLang(lang){
   document.getElementById('t-price-lbl').textContent=t.priceLbl;
   document.getElementById('t-buy-btn').textContent=t.buyBtn;
   document.getElementById('t-note').textContent=t.note;
-  document.getElementById('t-about-cap').textContent=t.aboutCap;
   document.getElementById('t-about-eyebrow').textContent=t.aboutEyebrow;
   document.getElementById('t-quote').innerHTML=t.quote;
   document.getElementById('t-about-body').innerHTML=t.body;
